@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket.IO chat - copy</title>
+    <style>
+        /* MOBILE */
+        /* @media (max-width: 500px) { */
+        body {
+            display: flex;
+            justify-content: center;
+            background-color: rgb(239, 234, 226);
+            margin: 0;
+            padding-bottom: 3rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .main-app {
+            width: 100%;
+        }
+
+        .header {
+            height: 4em;
+            background-color: #dbd0d0;
+            width: 100%;
+            position: fixed;
+            left: 0;
+            right: 0;
+            border-bottom: 1px rgb(195, 208, 210) solid;
+        }
+
+        #form {
+            background: rgb(218 204 204);
+            padding: 0.5rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            height: 4rem;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+        }
+
+        #input {
+            border: none;
+            padding: 0 1rem;
+            flex-grow: 0.85;
+            border-radius: 2rem;
+            margin: 0.25rem;
+        }
+
+        #input:focus {
+            outline: none;
+        }
+
+        #form>button {
+            background: #333;
+            border: none;
+            padding: 0 1rem;
+            margin: 0.25rem;
+            border-radius: 17px;
+            outline: none;
+            color: #fff;
+            flex-grow: 0.15;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages>li {
+            padding: 0.5rem 1rem;
+        }
+
+        li span {
+            font-weight: 600;
+        }
+
+        .main-container {
+            display: flex;
+        }
+
+        .connected-users li {
+            list-style-type: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .pm-msgs-container {
+            position: fixed;
+            bottom: 63px;
+            right: 0;
+            left: 0;
+            width: 4em;
+            background-color: rgb(255 237 239);
+            padding: 0.5rem 1rem;
+            border-radius: 0.3em;
+            margin-bottom: 0.15em;
+            border: 0.5px solid #dbd0d0;
+
+        }
+
+        .pm-msgs {
+            background-color: rgb(211, 218, 241);
+            height: 200px;
+            width: 200px;
+        }
+
+        .connected-users-container {
+            width: 25%;
+            min-width: 102px;
+            height: fit-content;
+            padding: 0.1em;
+            position: fixed;
+            top: 13em;
+        }
+
+        .connected-users-container li {
+            background-color: rgb(255 237 239);
+            padding: 0.5rem 0rem;
+            border-radius: 0.3em;
+            margin-bottom: 0.15em;
+            border: 0.5px solid #dbd0d0;
+        }
+
+        .connected-users {
+            margin-top: 0em;
+        }
+
+        .connected-users img {
+            width: 1.5em;
+            margin-right: 0.9em;
+        }
+
+        .msgs-container {
+            width: 100%;
+            margin-top: 1.5em;
+            width: 80%;
+            margin-top: 5.5em;
+            margin-left: 26%;
+            margin-bottom: 1em;
+        }
+
+        .msg-by-me {
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+        }
+
+        .msg-body-me {
+            background-color: rgb(217, 253, 211);
+            padding: 0.5rem 1rem;
+            border-radius: 2em;
+        }
+
+        .msg-body-other {
+            background-color: rgb(255, 255, 255);
+            padding: 0.5rem 1rem;
+            border-radius: 2em;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .rooms-container {
+            margin-top: 4.5em;
+            position: fixed;
+            top: 1em;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .rooms-container div {
+            margin-left: 0.2em;
+            background-color: rgb(255 237 239);
+            padding: 0.5rem 0.8rem;
+            border-radius: 0.6em;
+            border: 0.7px solid #dbd0d0;
+            width: 4.6em;
+            margin-bottom: 0.15em;
+        }
+
+        .room-btn:hover {
+            background-color: #f3b5b5
+        }
+
+        .room-btn:active {
+            box-shadow: 0 4px rgb(187, 188, 187);
+            transform: translateY(3px);
+        }
+
+        .btn {
+            cursor: pointer;
+        }
+
+        /* } */
+
+        @media (min-width: 501px) {
+            .main-app {
+                width: 80%;
+            }
+
+            .connected-users-container {
+                min-width: 140px;
+                padding: 1em;
+                width: auto;
+            }
+
+            .rooms-container {
+                margin-top: 5em;
+                display: flex;
+                flex-direction: row;
+            }
+
+            .rooms-container div {
+                margin-left: 1em;
+                padding: 0.5rem 1rem;
+                width: auto;
+            }
+
+            .msgs-container {
+                margin-left: 30%;
+            }
+
+            .pm-msgs-container {
+                bottom: 48px;
+                margin-left: 1em;
+                left: 10%;
+                width: 12em;
+            }
+
+            #form {
+                height: 3rem;
+                padding: 0.25rem;
+            }
+
+            #form>button {
+                border-radius: 3px;
+                flex-grow: 0;
+            }
+
+            #input {
+                flex-grow: 1;
+                margin-left: 10%;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-app">
+        <!-- HEADER -->
+        <header class="header"></header>
+        <!-- ROOMS -->
+        <div class="rooms-container flex">
+            <div class="room-btn btn" value="music" id="music" onclick="setTopic('music')">Music</div>
+            <div class="room-btn btn" value="sport" id="sport" onclick="setTopic('sport')">sport</div>
+            <div class="room-btn btn" value="general" id="general" onclick="setTopic('general')">general</div>
+        </div>
+
+        <section class="main-container">
+            <!-- CONNECTED-USERS -->
+            <section class="connected-users-container">
+                <div class="connected-users"></div>
+
+            </section>
+            <!-- MASSAGES-BOX -->
+            <div class="msgs-container">
+                <ul class="msgs-box" id="messages"></ul>
+                <!-- <div class="msgs-box" id="messages"></div> -->
+            </div>
+        </section>
+
+        <!-- PRIVATE MSGS -->
+        <div class="pm-msgs-container">
+            <!-- <div class="pm-msgs"> -->
+            <div class="pm-to">Message to: <span>Everyone</span></div>
+            <!-- </div> -->
+        </div>
+
+        <!-- SEND MESSAGE BOX -->
+        <form onsubmit="onSendMsg(event)" id="form" action="">
+            <input id="input" autocomplete="off" /><button class="btn">Send</button>
+        </form>
+
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var nickname = sessionStorage.nickname || prompt('whats you nickname?')
+        sessionStorage.nickname = nickname
+
+        var gTopic = 'general'
+        document.getElementById(gTopic).style.backgroundColor = 'rgb(213 184 187)'
+        var socket = io();
+        let privateMsgTo = ''
+        socket.emit('setTopic', gTopic)
+
+        socket.emit('setUserSocket', nickname)
+        socket.on('addMsg', addMsg)
+        socket.on('addMsgs', msgs => {
+            document.querySelector('.msgs-box').innerHTML = ``
+            // msgs.filter(msg => msg.topic === gTopic).filter(msg => msg.to === nickname || msg.by === nickname).forEach(addMsg)
+            msgs.filter(msg => msg.topic === gTopic).forEach(addMsg)
+        })
+
+
+        socket.on('connectedUsers', renderConnectedUsers)
+
+        function addMsg(msg) {
+            // אין נמען 0 כלומר הודעה רגילה
+            if (!msg.to) {
+                if (msg.by === nickname) document.querySelector('.msgs-box').innerHTML += `<li class="msg-by-me"> 
+                    <div class="msg-body-me">${msg.txt}</div></li>`
+                if (msg.by !== nickname) document.querySelector('.msgs-box').innerHTML += `<li class="flex">
+                    <div class="msg-body-other"><span>${msg.by}</span>: ${msg.txt}</div></li>`
+            }
+            // הודעה פרטית - תרנדר DM
+            if (msg.to) {
+                // if (msg.to === nickname) return
+                if (msg.by === nickname) document.querySelector('.msgs-box').innerHTML += `<li class="msg-by-me">
+                <div class="msg-body-me"><span>DM to ${msg.to}</span>: ${msg.txt}</div></li>`
+                if (msg.by !== nickname) document.querySelector('.msgs-box').innerHTML += `<li class="flex">
+                    <div class="msg-body-other"><span>DM from ${msg.by}</span>: ${msg.txt}</div></li>`
+            }
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function setTopic(topic) {
+            document.getElementById('sport').style.backgroundColor = 'rgb(255 237 239)'
+            document.getElementById('music').style.backgroundColor = 'rgb(255 237 239)'
+            document.getElementById('general').style.backgroundColor = 'rgb(255 237 239)'
+
+            document.getElementById(topic).style.backgroundColor = 'rgb(213 184 187)'
+            console.log('setting topic:', topic)
+            gTopic = topic
+            socket.emit('setTopic', topic)
+        }
+
+        function onSendMsg(e) {
+            const elInput = document.querySelector('form input')
+            e.preventDefault();
+            if (elInput.value) {
+                const msg = {
+                    by: nickname,
+                    txt: elInput.value,
+                    topic: gTopic,
+                    to: privateMsgTo
+                }
+                socket.emit('sendMsg', msg);
+                elInput.value = '';
+            }
+            document.querySelector('.pm-to span').innerHTML = `Everyone`
+            privateMsgTo = ''
+        }
+
+        function renderConnectedUsers(users) {
+            document.querySelector('.connected-users').innerHTML = ``
+
+            users.forEach((user) => {
+                document.querySelector('.connected-users').innerHTML += `<li class="btn" onclick="startPrivteMsg('${user}')"> <img src="./imgs/user.png" alt="">${user}</li>`
+            })
+        }
+
+        function startPrivteMsg(user) {
+            console.log('user:', user)
+            document.querySelector('.pm-to span').innerHTML = user
+            privateMsgTo = user
+        }
+
+
+    </script>
+</body>
+
+</html>
